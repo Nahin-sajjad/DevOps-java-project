@@ -1,7 +1,6 @@
-def registry   = 'https://trialpo3a8y.jfrog.io'
-def imageName  = 'trialpo3a8y.jfrog.io/docker-local/sample_app'
-def version    = '2.1.2'
-
+def registry = 'https://satishk.jfrog.io'
+def imageName = 'satishk.jfrog.io/satish-docker-local/sample_app'
+def version   = '2.1.2'
 pipeline {
     agent {
         node {
@@ -58,21 +57,16 @@ pipeline {
             steps {
                 script {
                     echo '<--------------- Jar Publish Started --------------->'
-
-                    def server = Artifactory.newServer(
-                        url: "${registry}/artifactory",
-                        credentialsId: "jfrog-identity-token"
-                    )
-
-                    def properties = "buildid=${env.BUILD_ID},commitid=${GIT_COMMIT}"
-                    def uploadSpec = """{
-                        "files": [
+                     def server = Artifactory.newServer url:registry+"/artifactory" ,  credentialsId:"jfrog_cred"
+                     def properties = "buildid=${env.BUILD_ID},commitid=${GIT_COMMIT}";
+                     def uploadSpec = """{
+                          "files": [
                             {
-                                "pattern": "target/*.jar",
-                                "target": "maven-libs-release/",
-                                "flat": false,
-                                "props": "${properties}",
-                                "exclusions": ["*.sha1", "*.md5"]
+                              "pattern": "jarstaging/(*)",
+                              "target": "maven-libs-release-local/{1}",
+                              "flat": "false",
+                              "props" : "${properties}",
+                              "exclusions": [ "*.sha1", "*.md5"]
                             }
                         ]
                     }"""
