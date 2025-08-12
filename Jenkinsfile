@@ -1,5 +1,5 @@
-def registry = 'https://satishk.jfrog.io'
-def imageName = 'satishk.jfrog.io/satish-docker-local/sample_app'
+def registry = 'https://trialpo3a8y.jfrog.io'
+def imageName = 'trialpo3a8y.jfrog.io/artifactory/docker-local/sample'
 def version   = '2.1.2'
 pipeline {
     agent {
@@ -57,16 +57,34 @@ pipeline {
             steps {
                 script {
                     echo '<--------------- Jar Publish Started --------------->'
-                     def server = Artifactory.newServer url:registry+"/artifactory" ,  credentialsId:"jfrog_cred"
+<<<<<<< HEAD
+
+                    def server = Artifactory.newServer(
+                        url: "${registry}/artifactory",
+                        credentialsId: "jfrog-identity-token"
+                    )
+
+                    def properties = "buildid=${env.BUILD_ID},commitid=${GIT_COMMIT}"
+                    def uploadSpec = """{
+                        "files": [
+                            {
+                                "pattern": "target/*.jar",
+                                "target": "maven-libs-release/",
+                                "flat": false,
+                                "props": "${properties}",
+                                "exclusions": ["*.sha1", "*.md5"]
+=======
+                     def server = Artifactory.newServer url:registry+"/artifactory" ,  credentialsId:"jfrog-identity"
                      def properties = "buildid=${env.BUILD_ID},commitid=${GIT_COMMIT}";
                      def uploadSpec = """{
                           "files": [
                             {
                               "pattern": "jarstaging/(*)",
-                              "target": "maven-libs-release-local/{1}",
+                              "target": "maven-libs-release/{1}",
                               "flat": "false",
                               "props" : "${properties}",
                               "exclusions": [ "*.sha1", "*.md5"]
+>>>>>>> c785a73d8711d4c607335af06c8fdef2b5f35982
                             }
                         ]
                     }"""
